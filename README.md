@@ -70,3 +70,31 @@ With PM2 in fork mode
 ```
 pm2 start index.js 
 ```
+
+USE
+---
+
+Request:
+```
+curl -X POST \
+  http://localhost:3000/ \
+  -H 'content-type: application/json' \
+  -d '{
+	"key1": "value-1",
+	"key2": "value-1",
+	"key3": "value-1",
+	"key4": "value-1",
+	"ttl": 30,
+	"key5": {
+		"2": "value-1",
+		"1": "value-12"
+	}
+}'
+```
+Response:
+```
+{
+    "success": true,
+    "result": false
+}
+```
