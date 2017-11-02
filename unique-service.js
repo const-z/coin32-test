@@ -30,7 +30,7 @@ class UniqueService extends EventEmitter {
 		delete find.ttl;
 		console.log(`[${hash}] find by params ${JSON.stringify(find)}`);
 		// delay for debug		
-		// await new Promise(resolve => { setTimeout(resolve, 5000); });
+		await new Promise(resolve => { setTimeout(resolve, 5000); });
 		const result = await DataModel.find(find).count();
 		const exists = !!result;
 		const beginLive = calcBeginTime(ttl);
@@ -46,12 +46,8 @@ class UniqueService extends EventEmitter {
 			console.log(`[${hash}] exists in cache`);
 			let result = await RequestModel.findOne({ hash }).lean();
 			exists = result.response;
-			if (exists === undefined && this[paramRequests][hash]) {
-				console.log(`[${hash}] wait for result`);
-				return;
-			}
 		}
-		if (exists === undefined) {			
+		if (exists === undefined && !this[paramRequests][hash]) {
 			try {
 				this[paramRequests][hash] = true;
 				exists = await this[funcExists](hash, params);
@@ -59,13 +55,19 @@ class UniqueService extends EventEmitter {
 				delete this[paramRequests][hash];
 			}
 		}
-		this.emit(hash, exists);
+		if (exists !== undefined) {
+			this.emit(hash, exists);
+		} else {
+			console.log(`[${hash}] wait for result`);
+		}
+
 		return;
 	}
 
 	async request(params) {
 		let hash = objectHash(params);
 		this[funcProcess](hash, params);
+		
 		return new Promise((resolve) => {
 			this.once(hash, (exists) => {
 				resolve(exists);
