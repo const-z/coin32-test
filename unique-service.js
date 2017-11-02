@@ -30,7 +30,7 @@ class UniqueService extends EventEmitter {
 		delete find.ttl;
 		console.log(`[${hash}] find by params ${JSON.stringify(find)}`);
 		// delay for debug		
-		await new Promise(resolve => { setTimeout(resolve, 5000); });
+		// await new Promise(resolve => { setTimeout(resolve, 5000); });
 		const result = await DataModel.find(find).count();
 		const exists = !!result;
 		const beginLive = calcBeginTime(ttl);
