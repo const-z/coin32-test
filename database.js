@@ -12,7 +12,9 @@ mongoose.set("debug", config.database.debug);
 // REQUEST SHEMA
 const RequestSchema = new Schema({
 	hash: { type: String },
-	result: { type: Boolean },
+	request: { type: Schema.Types.Mixed },
+	response: { type: Boolean },
+	timestamp: { type: Date },
 	beginLive: { type: Date }
 }, { strict: false, versionKey: false });
 
@@ -21,7 +23,7 @@ RequestSchema.index({ beginLive: 1 }, { expireAfterSeconds: config.database.defa
 
 // DATA SHEMA
 const DataSchema = new Schema({
-	
+
 }, { strict: false, versionKey: false });
 
 const RequestModel = mongoose.model(config.database.requestsCollectionName, RequestSchema, config.database.requestsCollectionName);

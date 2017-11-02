@@ -34,7 +34,7 @@ class UniqueService extends EventEmitter {
 		const result = await DataModel.find(find).count();
 		const exists = !!result;
 		const beginLive = calcBeginTime(ttl);
-		await RequestModel.update({ hash }, { timestamp: new Date(), request: params, response: exists, beginLive });
+		await RequestModel.update({ hash }, { beginLive, response: exists, request: params, timestamp: new Date() });
 
 		return exists;
 	}
@@ -67,7 +67,7 @@ class UniqueService extends EventEmitter {
 	async request(params) {
 		let hash = objectHash(params);
 		this[funcProcess](hash, params);
-		
+
 		return new Promise((resolve) => {
 			this.once(hash, (exists) => {
 				resolve(exists);
