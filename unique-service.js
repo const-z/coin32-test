@@ -66,12 +66,11 @@ class UniqueService extends EventEmitter {
 
 	async request(params) {
 		let hash = objectHash(params);
-		this[funcProcess](hash, params);
-
-		return new Promise((resolve) => {
+		return new Promise((resolve) => {			
 			this.once(hash, (exists) => {
 				resolve(exists);
 			});
+			this[funcProcess](hash, params);
 		});
 	}
 
